@@ -1,0 +1,56 @@
+* {
+    box-sizing: border-box;
+}
+
+html {
+    font-family: sans-serif;
+}
+
+body {
+    margin: 0;
+}
+
+.login-page-header {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.26);
+    margin: 3rem auto;
+    border-radius: 10px;
+    padding: 1rem;
+    background-color: #48412B;
+    color: white;
+    text-align: center;
+    width: 90%;
+    max-width: 40rem;
+}
+
+.sign {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.26);
+    margin: 3rem auto;
+    border-radius: 10px;
+    padding: 1rem;
+    background-color: #ccc;
+    width: 90%;
+    max-width: 40rem;
+}
+
+.sign label {
+    font-weight: bold;
+}
+
+.sign input{
+    width: 100%;
+    padding: 15px;
+    margin: 1rem 0 3rem 0;
+    background-color: #f1f1f1;
+}
+
+.sign button {
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid  #48412B;
+    background-color:  #48412B;
+    color: white;
+    padding: 0.3rem 1rem;
+    box-shadow: 1px 1px 4px rgba(0,0,0,0.26);
+    border-radius: 20px;
+    margin: 0 1rem;
+}
