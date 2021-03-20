@@ -2,7 +2,8 @@
 
 namespace OnionSquadTeamProject.Api.ViewModel
 {
-  public class UserViewModel: BaseViewModel
+  public class BaseViewModel
   {
+    public Guid Id { get; set; }
   }
 }

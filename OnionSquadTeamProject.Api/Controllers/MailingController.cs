@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using OnionSquadTeamProject.Api.Services.Authentication;
 using OnionSquadTeamProject.Api.Services.Mailing;
+using OnionSquadTeamProject.Api.Structures;
 using OnionSquadTeamProject.Api.ViewModel;
 
 namespace OnionSquadTeamProject.Api.Controllers
@@ -17,17 +19,25 @@ namespace OnionSquadTeamProject.Api.Controllers
     }
 
     [HttpPost]
-    public void SendMailToAllWatchers(UserViewModel userViewModel)
+    public async Task<SendingResponse> SendMailToAllWatchers(UserViewModel userViewModel)
     {
       if (!ModelState.IsValid)
       {
-        return;
+        return null;
       }
 
       if (_authenticationService.IsUserValid(userViewModel))
       {
-          _mailingService.SendMails(userViewModel);
+          return await _mailingService.SendMails(userViewModel);
       }
+
+      return null;
+    }
+
+    [HttpPost]
+    public void AddWatcher(UserViewModel userViewModel, WatcherViewModel watcher)
+    {
+      
     }
   }
 }

@@ -12,6 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OnionSquadTeamProject.Api.Repositories.Users;
+using OnionSquadTeamProject.Api.Repositories.Watchers;
+using OnionSquadTeamProject.Api.Services.Mailing;
+using OnionSquadTeamProject.Api.Services.Sending;
+using AuthenticationService = OnionSquadTeamProject.Api.Services.Authentication.AuthenticationService;
+using IAuthenticationService = OnionSquadTeamProject.Api.Services.Authentication.IAuthenticationService;
 
 namespace OnionSquadTeamProject.Api
 {
@@ -29,6 +35,13 @@ namespace OnionSquadTeamProject.Api
         {
             services.AddAuthentication(AzureADDefaults.BearerAuthenticationScheme)
                 .AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
+
+            services.AddScoped<IMailingService, MailingService>();
+            services.AddScoped<ISendingService, FakeSendingService>();
+            services.AddScoped<IWatchersRepository, FakeWatchersRepository>();
+            services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            
             services.AddControllers();
         }
 
