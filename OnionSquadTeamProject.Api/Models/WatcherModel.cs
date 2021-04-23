@@ -6,6 +6,6 @@ namespace OnionSquadTeamProject.Api.Models
   {
     public string Name { get; set; }
     public string Email { get; set; }
-    public Guid ParentId { get; set; }
+    public int ParentId { get; set; }
   }
 }

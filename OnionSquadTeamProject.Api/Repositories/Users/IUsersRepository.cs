@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Threading.Tasks;
 using OnionSquadTeamProject.Api.Models;
+using OnionSquadTeamProject.Api.ViewModel;
 
 namespace OnionSquadTeamProject.Api.Repositories.Users
 {
   public interface IUsersRepository
   {
-    UserModel GetUser(Guid userId);
-    void AddUser(Guid userId, string name);
-    void RemoveUser(Guid userId);
+    Task<UserModel> GetUser(string name, string password);
+    Task AddUser(string name, string password);
   }
 }

@@ -1,24 +1,22 @@
 ﻿using System;
+using System.Threading.Tasks;
 using OnionSquadTeamProject.Api.Models;
 
 namespace OnionSquadTeamProject.Api.Repositories.Users
 {
   public class UsersRepository: IUsersRepository
   {
-    public UserModel GetUser(Guid userId)
+    public async Task<UserModel> GetUser(string name, string password)
     {
-      return new UserModel
-      {
-        Id = userId,
-        FirstName = "TempUser"
-      };
+      await Task.Delay(1);
+      return new UserModel();
     }
 
-    public void AddUser(Guid userId, string name)
+    public async Task AddUser(string name, string password)
     {
     }
 
-    public void RemoveUser(Guid userId)
+    public void RemoveUser(int userId)
     {
     }
   }

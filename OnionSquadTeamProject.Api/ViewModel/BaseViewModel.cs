@@ -4,6 +4,6 @@ namespace OnionSquadTeamProject.Api.ViewModel
 {
   public class BaseViewModel
   {
-    public Guid Id { get; set; }
+    public int Id { get; set; }
   }
 }

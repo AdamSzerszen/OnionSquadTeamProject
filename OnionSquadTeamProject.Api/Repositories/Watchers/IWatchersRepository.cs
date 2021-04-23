@@ -7,8 +7,8 @@ namespace OnionSquadTeamProject.Api.Repositories.Watchers
 {
   public interface IWatchersRepository
   {
-    Task<List<WatcherModel>> GetAllWatchers(Guid parentId);
-    Task<WatcherModel> AddNewWatcher(Guid parentId, string name, string email);
-    Task<bool> RemoveWatcher(Guid watcherId);
+    Task<List<WatcherModel>> GetAllWatchers(int parentId);
+    Task<WatcherModel> AddNewWatcher(int parentId, string name, string email);
+    Task<bool> RemoveWatcher(int watcherId);
   }
 }

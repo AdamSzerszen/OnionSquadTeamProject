@@ -15,20 +15,20 @@ namespace OnionSquadTeamProject.Api.Repositories.Watchers
       _watchers = new List<WatcherModel>();
     }
 
-    public async Task<List<WatcherModel>> GetAllWatchers(Guid parentId)
+    public async Task<List<WatcherModel>> GetAllWatchers(int parentId)
     {
       await Task.Delay(1);
       return _watchers;
     }
 
-    public async Task<WatcherModel> AddNewWatcher(Guid parentId, string name, string email)
+    public async Task<WatcherModel> AddNewWatcher(int parentId, string name, string email)
     {
       WatcherModel watcherModel = new WatcherModel
       {
         Name = name,
         Email = email,
         ParentId = parentId,
-        Id = new Guid()
+        Id = 0
       };
       
       _watchers.Add(watcherModel);
@@ -37,7 +37,7 @@ namespace OnionSquadTeamProject.Api.Repositories.Watchers
       return watcherModel;
     }
 
-    public async Task<bool> RemoveWatcher(Guid watcherId)
+    public async Task<bool> RemoveWatcher(int watcherId)
     {
       WatcherModel watcher = _watchers.FirstOrDefault(w => w.Id == watcherId);
       bool wasWatcherRemoved = false;

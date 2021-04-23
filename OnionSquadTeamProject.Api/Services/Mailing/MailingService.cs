@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using OnionSquadTeamProject.Api.Models;
@@ -9,18 +10,18 @@ using OnionSquadTeamProject.Api.ViewModel;
 
 namespace OnionSquadTeamProject.Api.Services.Mailing
 {
-  public class MailingService: IMailingService
+  public class MailingService : IMailingService
   {
     private readonly IWatchersRepository _watchersRepository;
     private readonly ISendingService _sendingService;
-    
+
     public MailingService(IWatchersRepository watchersRepository, ISendingService sendingService)
     {
       _watchersRepository = watchersRepository;
       _sendingService = sendingService;
     }
 
-    public async Task<SendingResponse> SendMails(UserViewModel userViewModel)
+    public async Task<SendingResponse> SendMails(UserViewModel userViewModel, string message)
     {
       List<WatcherModel> watcherModels = await _watchersRepository.GetAllWatchers(userViewModel.Id);
 
@@ -31,8 +32,17 @@ namespace OnionSquadTeamProject.Api.Services.Mailing
           Email = watcherModel.Email,
           Name = watcherModel.Name
         };
-      
+
       return await _sendingService.SendBulk(query.ToList());
+    }
+
+    public async Task<AddWatcherResponse> AddWatcher(int parentId, WatcherViewModel watcherViewModel)
+    {
+      await _watchersRepository.AddNewWatcher(parentId, watcherViewModel.Name, watcherViewModel.Email);
+      return new AddWatcherResponse
+      {
+        Success = true
+      };
     }
   }
 }
