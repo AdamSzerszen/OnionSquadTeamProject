@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
@@ -30,7 +31,9 @@ namespace OnionSquadTeamProject.Api
             
             services.AddScoped<IMailingService, MailingService>();
             services.AddScoped<ISendingService, FakeSendingService>();
-            services.AddSingleton<IWatchersRepository, FakeWatchersRepository>();
+            services.AddSingleton<IWatchersRepository>(
+                InitializeCosmosClientInstanceAsync(Configuration.GetSection("CosmosDb"))
+                    .GetAwaiter().GetResult());
             services.AddSingleton<IUsersRepository, UsersRepository>();
             services.AddSingleton<IUserService, UserService>();
             
@@ -67,6 +70,27 @@ namespace OnionSquadTeamProject.Api
                     defaults: new { controller = "mailing", action = "send" });
                 endpoints.MapControllers();
             });
+        }
+        
+        /// <summary>
+        /// Creates a Cosmos DB database and a container with the specified partition key. 
+        /// </summary>
+        /// <returns></returns>
+        private static async Task<AzureWatchersRepository> InitializeCosmosClientInstanceAsync(
+            IConfigurationSection configurationSection)
+        {
+            string databaseName = configurationSection.GetSection("DatabaseName").Value;
+            string containerName = configurationSection.GetSection("ContainerName").Value;
+            string account = configurationSection.GetSection("Account").Value;
+            string key = configurationSection.GetSection("Key").Value;
+
+            Microsoft.Azure.Cosmos.CosmosClient client = new(account, key);
+            AzureWatchersRepository cosmosDbService = new(client, databaseName, containerName);
+            Microsoft.Azure.Cosmos.DatabaseResponse database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+
+            await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+
+            return cosmosDbService;
         }
     }
 }
