@@ -6,7 +6,7 @@ function sendMail() {
         const data = {addres, mail, sendDate, sendTime}
         
 
-    fetch(`={"addres":${addres}, "mail":${mail}`, {
+    fetch("", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
