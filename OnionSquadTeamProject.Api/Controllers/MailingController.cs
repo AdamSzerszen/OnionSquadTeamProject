@@ -22,41 +22,20 @@ namespace OnionSquadTeamProject.Api.Controllers
     [HttpPost]
     [Authorize]
     [Route("mailing/send")]
-    public async Task<ActionResult<SendingResponse>> SendMailToAllWatchers([FromBody] UserViewModel userViewModel)
+    public async Task<ActionResult<SendingResponse>> SendMail([FromBody] SendMailRequest sendRequest)
     {
       if (!ModelState.IsValid)
       {
         return BadRequest();
       }
 
-      bool isUserValid = await _userService.IsUserValid(userViewModel);
+      bool isUserValid = await _userService.IsUserValid(sendRequest.Sender);
       if (isUserValid)
       {
-        return Ok(await _mailingService.SendMails(userViewModel, "Foo"));
+        return Ok(await _mailingService.SendMail(sendRequest.Sender, sendRequest.MailViewModel));
       }
 
       return BadRequest("Invalid user!");
-    }
-
-    [HttpPost]
-    [Authorize]
-    [Route("mailing/watchers/add")]
-    public async Task<ActionResult<AddWatcherResponse>> AddWatcher([FromBody] AddWatcherRequest addWatcherRequest)
-    {
-      if (!ModelState.IsValid)
-      {
-        return BadRequest();
-      }
-
-      bool isUserValid = await _userService.IsUserValid(addWatcherRequest.Parent);
-      if (!isUserValid)
-      {
-        return BadRequest("Invalid user!");
-      }
-
-      AddWatcherResponse response =
-        await _mailingService.AddWatcher(addWatcherRequest.Parent.Id, addWatcherRequest.Watcher);
-      return Ok(response);
     }
   }
 }

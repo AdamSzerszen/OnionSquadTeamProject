@@ -7,7 +7,6 @@ namespace OnionSquadTeamProject.Api.Services.Sending
 {
   public interface ISendingService
   {
-    Task<SendingResponse> SendSingle(WatcherViewModel watchers);
-    Task<SendingResponse> SendBulk(List<WatcherViewModel> watchers);
+    Task<SendingResponse> SendMessage(SendingMailViewModel mailViewModel);
   }
 }

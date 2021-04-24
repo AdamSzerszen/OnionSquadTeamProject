@@ -1,47 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using OnionSquadTeamProject.Api.Models;
-using OnionSquadTeamProject.Api.Repositories.Watchers;
 using OnionSquadTeamProject.Api.Services.Sending;
 using OnionSquadTeamProject.Api.Structures;
 using OnionSquadTeamProject.Api.ViewModel;
+using RestSharp;
+using RestSharp.Authenticators;
 
 namespace OnionSquadTeamProject.Api.Services.Mailing
 {
   public class MailingService : IMailingService
   {
-    private readonly IWatchersRepository _watchersRepository;
     private readonly ISendingService _sendingService;
 
-    public MailingService(IWatchersRepository watchersRepository, ISendingService sendingService)
+    public MailingService(ISendingService sendingService)
     {
-      _watchersRepository = watchersRepository;
       _sendingService = sendingService;
     }
 
-    public async Task<SendingResponse> SendMails(UserViewModel userViewModel, string message)
+    public async Task<SendingResponse> SendMail(UserViewModel userViewModel, SendingMailViewModel mailViewModel)
     {
-      List<WatcherModel> watcherModels = await _watchersRepository.GetAllWatchers(userViewModel.Id);
 
-      ParallelQuery<WatcherViewModel> query = from watcherModel in watcherModels.AsParallel()
-        select new WatcherViewModel
-        {
-          Id = watcherModel.Id,
-          Email = watcherModel.Email,
-          Name = watcherModel.Name
-        };
-
-      return await _sendingService.SendBulk(query.ToList());
-    }
-
-    public async Task<AddWatcherResponse> AddWatcher(int parentId, WatcherViewModel watcherViewModel)
-    {
-      await _watchersRepository.AddNewWatcher(parentId, watcherViewModel.Name, watcherViewModel.Email);
-      return new AddWatcherResponse
+      RestClient client = new RestClient
       {
-        Success = true
+        BaseUrl = new Uri("https://api.mailgun.net/v3"),
+        Authenticator = new HttpBasicAuthenticator("api", "YOUR_API_KEY")
+      };
+      RestRequest request = new RestRequest();
+      request.AddParameter ("domain", "YOUR_DOMAIN_NAME", ParameterType.UrlSegment);
+      request.Resource = "{domain}/messages";
+      request.AddParameter ("from", "Excited User <mailgun@YOUR_DOMAIN_NAME>");
+      request.AddParameter ("to", "bar@example.com");
+      request.AddParameter ("subject", "Hello");
+      request.AddParameter ("text", "Testing some Mailgun awesomness!");
+      request.Method = Method.POST;
+      IRestResponse restResponse = await client.ExecuteAsync (request);
+
+      return new SendingResponse
+      {
+        Content = restResponse.Content,
+        Success = restResponse.IsSuccessful
       };
     }
   }

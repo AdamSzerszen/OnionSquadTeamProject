@@ -1,6 +1,4 @@
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OnionSquadTeamProject.Api.Authentication;
 using OnionSquadTeamProject.Api.Repositories.Users;
-using OnionSquadTeamProject.Api.Repositories.Watchers;
 using OnionSquadTeamProject.Api.Services.Authentication;
 using OnionSquadTeamProject.Api.Services.Mailing;
 using OnionSquadTeamProject.Api.Services.Sending;
@@ -31,10 +28,9 @@ namespace OnionSquadTeamProject.Api
             
             services.AddScoped<IMailingService, MailingService>();
             services.AddScoped<ISendingService, FakeSendingService>();
-            services.AddSingleton<IWatchersRepository>(
+            services.AddSingleton<IUsersRepository>(
                 InitializeCosmosClientInstanceAsync(Configuration.GetSection("CosmosDb"))
                     .GetAwaiter().GetResult());
-            services.AddSingleton<IUsersRepository, UsersRepository>();
             services.AddSingleton<IUserService, UserService>();
             
             services.AddControllers();
@@ -76,7 +72,7 @@ namespace OnionSquadTeamProject.Api
         /// Creates a Cosmos DB database and a container with the specified partition key. 
         /// </summary>
         /// <returns></returns>
-        private static async Task<AzureWatchersRepository> InitializeCosmosClientInstanceAsync(
+        private static async Task<UsersRepository> InitializeCosmosClientInstanceAsync(
             IConfigurationSection configurationSection)
         {
             string databaseName = configurationSection.GetSection("DatabaseName").Value;
@@ -85,7 +81,7 @@ namespace OnionSquadTeamProject.Api
             string key = configurationSection.GetSection("Key").Value;
 
             Microsoft.Azure.Cosmos.CosmosClient client = new(account, key);
-            AzureWatchersRepository cosmosDbService = new(client, databaseName, containerName);
+            UsersRepository cosmosDbService = new(client, databaseName, containerName);
             Microsoft.Azure.Cosmos.DatabaseResponse database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
 
             await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");

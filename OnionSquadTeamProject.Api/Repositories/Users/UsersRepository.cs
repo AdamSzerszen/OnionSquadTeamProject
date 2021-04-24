@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 using OnionSquadTeamProject.Api.Models;
@@ -21,7 +19,7 @@ namespace OnionSquadTeamProject.Api.Repositories.Users
     public async Task<UserModel> GetUser(string name, string password)
     {
       FeedIterator<UserModel> query = _container.GetItemQueryIterator<UserModel>(
-        new QueryDefinition($"SELECT * FROM Users WHERE Users.Name = {name} AND Users.Password = {password}"));
+        new QueryDefinition($"SELECT * FROM Users WHERE Users.FirstName = {name} AND Users.Password = {password}"));
       if (!query.HasMoreResults)
       {
         return null;
